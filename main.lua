@@ -20,7 +20,7 @@ function create_block()
 
     local bits = {}
     local random_position = math.random(10, love.graphics.getWidth() - 100)
-    local random_block = math.random(7)
+    local random_block = math.random(4)
 
     local x1
     local x2
@@ -76,13 +76,13 @@ function create_block()
 
       x1 = random_position
       x2 = random_position + 32
-      x3 = random_position 
-      x4 = random_position + 32
+      x3 = random_position + 64
+      x4 = random_position + 64
 
       y1 = -100
       y2 = -100
-      y3 = -132
-      y4 = -132
+      y3 = -100
+      y4 = -68
 
       random_block_img = bit4_img
     elseif random_block == 5 then
