@@ -14,6 +14,57 @@ function create_block()
 
     local bits = {}
     local random_position = math.random(10, love.graphics.getWidth() - 100)
+    local random_block = math.random(2)
+
+    local x1
+    local x2
+    local x3
+    local x4
+
+    local y1
+    local y2
+    local y3
+    local y4
+
+    local random_block_img
+
+    if random_block == 1 then
+      x1 = random_position
+      x2 = random_position + 32
+      x3 = random_position + 64 
+      x4 = random_position + 96
+
+      y1 = -100
+      y2 = -100
+      y3 = -100
+      y4 = -100
+
+      random_block_img = bit_img
+    elseif random_block == 2 then
+
+      x1 = random_position
+      x2 = random_position + 32
+      x3 = random_position 
+      x4 = random_position + 32
+
+      y1 = -100
+      y2 = -100
+      y3 = -132
+      y4 = -132
+
+      random_block_img = bit_img
+    end
+
+    local new_bit = { x = x1, y = y1, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = x2, y = y2, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = x3, y = y3, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = x4, y = y4, img = random_block_img}
+    table.insert(bits,new_bit)
+
+    --[[
     local new_bit = { x = random_position, y = -100, img = bit_img}
     table.insert(bits,new_bit)
     new_bit = { x = random_position + 32, y = -100, img = bit_img}
@@ -22,6 +73,7 @@ function create_block()
     table.insert(bits,new_bit)
     new_bit = { x = random_position + 96, y = -100, img = bit_img}
     table.insert(bits,new_bit)
+    ]]
 
 
     table.insert(blocks, bits)
