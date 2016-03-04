@@ -9,21 +9,18 @@ function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
          y1 < y2+h2 and
          y2 < y1+h1
 end
-function block_update(dt)
 
-  block_timer = block_timer + dt*10
-
-  if block_timer > 10 then
+function create_block()
 
     local bits = {}
-    local random_number = math.random(10, love.graphics.getWidth() - 100)
-    local new_bit = { x = random_number, y = -100, img = bit_img}
+    local random_position = math.random(10, love.graphics.getWidth() - 100)
+    local new_bit = { x = random_position, y = -100, img = bit_img}
     table.insert(bits,new_bit)
-    new_bit = { x = random_number + 32, y = -100, img = bit_img}
+    new_bit = { x = random_position + 32, y = -100, img = bit_img}
     table.insert(bits,new_bit)
-    new_bit = { x = random_number + 64, y = -100, img = bit_img}
+    new_bit = { x = random_position + 64, y = -100, img = bit_img}
     table.insert(bits,new_bit)
-    new_bit = { x = random_number + 96, y = -100, img = bit_img}
+    new_bit = { x = random_position + 96, y = -100, img = bit_img}
     table.insert(bits,new_bit)
 
 
@@ -31,19 +28,10 @@ function block_update(dt)
 
     block_timer = 0
 
-  end
+end
+function check_block_collision(block1,block2,no_collision)
 
-  
-  for i, block1 in ipairs(blocks) do
-
-    local no_collision = true
-
-    for k, block2 in ipairs(blocks) do
-
-      if block1 == block2 then
-        break;
-      end
-
+      --must check each bit in block1 with each bit in block2
       for i, bit1 in ipairs(block1) do
         for k, bit2 in ipairs(block2) do
 
@@ -54,6 +42,34 @@ function block_update(dt)
         end
       end
 
+      return no_collision
+end
+--all block game logic
+function block_update(dt)
+
+  block_timer = block_timer + dt*10
+
+  if block_timer > 10 then
+    create_block()
+  end
+  
+  -- loop through each block and check if it has collided, if not move it.
+  for i, block1 in ipairs(blocks) do
+
+    local no_collision = true
+
+    for k, block2 in ipairs(blocks) do
+
+      if block1 == block2 then
+        break
+      end
+
+      no_collision = check_block_collision(block1,block2,no_collision)
+
+      --no reason to keep checking for a collision if we already found one
+      if not no_collision then
+        break
+      end
     end
 
     if (block1[1].y + block1[1].img:getHeight() < 750) and no_collision then
