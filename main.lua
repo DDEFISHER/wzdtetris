@@ -19,8 +19,9 @@ end
 function create_block()
 
     local bits = {}
-    local random_position = math.random(10, love.graphics.getWidth() - 100)
-    local random_block = math.random(6)
+    --local random_position = math.random(10, love.graphics.getWidth() - 100)
+    local random_position = 256
+    local random_block = math.random(7)
 
     local x1
     local x2
@@ -115,12 +116,12 @@ function create_block()
 
       x1 = random_position
       x2 = random_position + 32
-      x3 = random_position 
+      x3 = random_position + 64 
       x4 = random_position + 32
 
       y1 = -100
       y2 = -100
-      y3 = -132
+      y3 = -100
       y4 = -132
 
       random_block_img = bit7_img
@@ -167,7 +168,33 @@ function check_block_collision(block1,block2,no_collision)
 
       return no_collision
 end
---all block game logic
+function move_block(dt)
+
+  if blocks[1] then
+
+    for i, bit in ipairs(blocks[1]) do
+      if bit.y + bit.img:getHeight() > 750 then
+        table.remove(blocks,1)
+      end
+    end
+  end
+
+	if love.keyboard.isDown('left','a') then
+      for i, bit in ipairs(blocks[1]) do
+        if blocks[1][4].x > 0 then
+          bit.x = bit.x - 32
+        end
+      end
+	elseif love.keyboard.isDown('right','d') then
+      for i, bit in ipairs(blocks[1]) do
+        if blocks[1][4].x < 500 then
+          bit.x = bit.x + 32
+        end
+      end
+  end
+
+end
+--main block game logic
 function block_update(dt)
 
   block_timer = block_timer + dt*10
@@ -176,6 +203,8 @@ function block_update(dt)
     create_block()
   end
   
+  move_block(dt)
+
   -- loop through each block and check if it has collided, if not move it.
   for i, block1 in ipairs(blocks) do
 
