@@ -20,7 +20,7 @@ function create_block()
 
     local bits = {}
     local random_position = math.random(10, love.graphics.getWidth() - 100)
-    local random_block = math.random(4)
+    local random_block = math.random(5)
 
     local x1
     local x2
@@ -89,8 +89,8 @@ function create_block()
 
       x1 = random_position
       x2 = random_position + 32
-      x3 = random_position 
-      x4 = random_position + 32
+      x3 = random_position + 32 
+      x4 = random_position + 64
 
       y1 = -100
       y2 = -100
