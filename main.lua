@@ -1,6 +1,12 @@
 --block globals
 blocks = {}
-bit_img = nil
+bit1_img = nil
+bit2_img = nil
+bit3_img = nil
+bit4_img = nil
+bit5_img = nil
+bit6_img = nil
+bit7_img = nil
 block_timer = 0
 
 function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
@@ -14,7 +20,7 @@ function create_block()
 
     local bits = {}
     local random_position = math.random(10, love.graphics.getWidth() - 100)
-    local random_block = math.random(2)
+    local random_block = math.random(7)
 
     local x1
     local x2
@@ -39,7 +45,7 @@ function create_block()
       y3 = -100
       y4 = -100
 
-      random_block_img = bit_img
+      random_block_img = bit1_img
     elseif random_block == 2 then
 
       x1 = random_position
@@ -52,7 +58,72 @@ function create_block()
       y3 = -132
       y4 = -132
 
-      random_block_img = bit_img
+      random_block_img = bit2_img
+    elseif random_block == 3 then
+
+      x1 = random_position
+      x2 = random_position + 32
+      x3 = random_position + 64
+      x4 = random_position + 64
+
+      y1 = -100
+      y2 = -100
+      y3 = -100
+      y4 = -132
+
+      random_block_img = bit3_img
+    elseif random_block == 4 then
+
+      x1 = random_position
+      x2 = random_position + 32
+      x3 = random_position 
+      x4 = random_position + 32
+
+      y1 = -100
+      y2 = -100
+      y3 = -132
+      y4 = -132
+
+      random_block_img = bit4_img
+    elseif random_block == 5 then
+
+      x1 = random_position
+      x2 = random_position + 32
+      x3 = random_position 
+      x4 = random_position + 32
+
+      y1 = -100
+      y2 = -100
+      y3 = -132
+      y4 = -132
+
+      random_block_img = bit5_img
+    elseif random_block == 6 then
+
+      x1 = random_position
+      x2 = random_position + 32
+      x3 = random_position 
+      x4 = random_position + 32
+
+      y1 = -100
+      y2 = -100
+      y3 = -132
+      y4 = -132
+
+      random_block_img = bit6_img
+    elseif random_block == 7 then
+
+      x1 = random_position
+      x2 = random_position + 32
+      x3 = random_position 
+      x4 = random_position + 32
+
+      y1 = -100
+      y2 = -100
+      y3 = -132
+      y4 = -132
+
+      random_block_img = bit7_img
     end
 
     local new_bit = { x = x1, y = y1, img = random_block_img}
@@ -65,13 +136,13 @@ function create_block()
     table.insert(bits,new_bit)
 
     --[[
-    local new_bit = { x = random_position, y = -100, img = bit_img}
+    local new_bit = { x = random_position, y = -100, img = bit1_img}
     table.insert(bits,new_bit)
-    new_bit = { x = random_position + 32, y = -100, img = bit_img}
+    new_bit = { x = random_position + 32, y = -100, img = bit1_img}
     table.insert(bits,new_bit)
-    new_bit = { x = random_position + 64, y = -100, img = bit_img}
+    new_bit = { x = random_position + 64, y = -100, img = bit1_img}
     table.insert(bits,new_bit)
-    new_bit = { x = random_position + 96, y = -100, img = bit_img}
+    new_bit = { x = random_position + 96, y = -100, img = bit1_img}
     table.insert(bits,new_bit)
     ]]
 
@@ -136,7 +207,13 @@ function block_update(dt)
 
 end
 function love.load(arg)
-  bit_img = love.graphics.newImage('assets/solo_block.png')
+  bit1_img = love.graphics.newImage('assets/bit1.png')
+  bit2_img = love.graphics.newImage('assets/bit2.png')
+  bit3_img = love.graphics.newImage('assets/bit3.png')
+  bit4_img = love.graphics.newImage('assets/bit4.png')
+  bit5_img = love.graphics.newImage('assets/bit5.png')
+  bit6_img = love.graphics.newImage('assets/bit6.png')
+  bit7_img = love.graphics.newImage('assets/bit7.png')
 end
 
 function love.update(dt)
