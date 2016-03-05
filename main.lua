@@ -9,6 +9,7 @@ bit5_img = nil
 bit6_img = nil
 bit7_img = nil
 block_timer = 0
+move_timer = 0
 active_block = 1
 
 function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
@@ -175,12 +176,14 @@ function move_block(dt)
   if blocks[active_block] then
 
     if love.keyboard.isDown('left','a') then
+        move_timer = 0;
         for i, bit in ipairs(blocks[active_block]) do
           if blocks[active_block][4].x > 0 then
             bit.x = bit.x - 32
           end
         end
     elseif love.keyboard.isDown('right','d') then
+        move_timer = 0;
         for i, bit in ipairs(blocks[active_block]) do
           if blocks[active_block][4].x < 500 then
             bit.x = bit.x + 32
@@ -194,12 +197,17 @@ end
 function block_update(dt)
 
   block_timer = block_timer + dt*10
+  move_timer = move_timer + dt*20
+
+
 
   if block_timer > 30 then
     create_block()
   end
   
-  move_block(dt)
+  if move_timer > 1 then
+    move_block(dt)
+  end
 
   -- loop through each block and check if it has collided, if not move it.
   for i, block1 in ipairs(blocks) do
