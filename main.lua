@@ -17,6 +17,18 @@ function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
          y1 < y2+h2 and
          y2 < y1+h1
 end
+function no_bottom(block)
+
+  for k, bit in ipairs(block) do
+    
+    if (bit.y + bit.img:getHeight( ) >= 750) then
+      return false
+    end
+  end
+
+  return true
+
+end
 
 function create_block()
 
@@ -162,16 +174,6 @@ function move_block(dt)
 
   if blocks[active_block] then
 
-    for i, bit in ipairs(blocks[active_block]) do
-      if bit.y + bit.img:getHeight() > 750 then
-        break;
-      end
-    end
-
-  end
-
-  if blocks[active_block] then
-
     if love.keyboard.isDown('left','a') then
         for i, bit in ipairs(blocks[active_block]) do
           if blocks[active_block][4].x > 0 then
@@ -218,7 +220,7 @@ function block_update(dt)
       end
     end
 
-    if (block1[1].y + block1[1].img:getHeight() < 750) and no_collision then
+    if no_bottom(block1) and no_collision then
 
       for k, bit in ipairs(block1) do
         bit.y = bit.y + (200*dt)
