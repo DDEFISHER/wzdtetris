@@ -18,6 +18,20 @@ function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
          y1 < y2+h2 and
          y2 < y1+h1
 end
+function CheckFutureSideCollision(amount)
+
+  for k, block in ipairs(inactive_blocks) do
+    for i, bit1 in ipairs(block) do
+      for j, bit2 in ipairs(blocks[active_block]) do
+        if CheckCollision(bit1.x,bit1.y,bit1.img:getWidth(),bit1.img:getHeight(),bit2.x + amount ,bit2.y,bit2.img:getWidth(),bit2.img:getHeight()) then
+          return false
+        end
+      end
+    end
+  end
+
+  return true
+end
 function no_bottom(block)
 
   for k, bit in ipairs(block) do
@@ -177,15 +191,15 @@ function move_block(dt)
 
     if love.keyboard.isDown('left','a') then
         move_timer = 0;
-        for i, bit in ipairs(blocks[active_block]) do
-          if blocks[active_block][4].x > 0 then
+        if blocks[active_block][4].x > 0 and CheckFutureSideCollision(-32) then
+          for i, bit in ipairs(blocks[active_block]) do
             bit.x = bit.x - 32
           end
         end
     elseif love.keyboard.isDown('right','d') then
         move_timer = 0;
-        for i, bit in ipairs(blocks[active_block]) do
-          if blocks[active_block][4].x < 500 then
+        if blocks[active_block][4].x < 500 and CheckFutureSideCollision(32) then
+          for i, bit in ipairs(blocks[active_block]) do
             bit.x = bit.x + 32
           end
         end
