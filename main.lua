@@ -8,6 +8,7 @@ bit5_img = nil
 bit6_img = nil
 bit7_img = nil
 block_timer = 0
+active_block = 1
 
 function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
   return x1 < x2+w2 and
@@ -136,18 +137,6 @@ function create_block()
     new_bit = { x = x4, y = y4, img = random_block_img}
     table.insert(bits,new_bit)
 
-    --[[
-    local new_bit = { x = random_position, y = -100, img = bit1_img}
-    table.insert(bits,new_bit)
-    new_bit = { x = random_position + 32, y = -100, img = bit1_img}
-    table.insert(bits,new_bit)
-    new_bit = { x = random_position + 64, y = -100, img = bit1_img}
-    table.insert(bits,new_bit)
-    new_bit = { x = random_position + 96, y = -100, img = bit1_img}
-    table.insert(bits,new_bit)
-    ]]
-
-
     table.insert(blocks, bits)
 
     block_timer = 0
@@ -161,6 +150,7 @@ function check_block_collision(block1,block2,no_collision)
 
           if CheckCollision(bit1.x,bit1.y,bit1.img:getWidth(),bit1.img:getHeight(),bit2.x,bit2.y,bit2.img:getWidth(),bit2.img:getHeight()) then
             no_collision = false
+            active_block = active_block + 1;
             break;
           end
         end
@@ -170,27 +160,32 @@ function check_block_collision(block1,block2,no_collision)
 end
 function move_block(dt)
 
-  if blocks[1] then
+  if blocks[active_block] then
 
-    for i, bit in ipairs(blocks[1]) do
+    for i, bit in ipairs(blocks[active_block]) do
       if bit.y + bit.img:getHeight() > 750 then
-        table.remove(blocks,1)
+        active_block = active_block + 1;
+        break;
       end
     end
+
   end
 
-	if love.keyboard.isDown('left','a') then
-      for i, bit in ipairs(blocks[1]) do
-        if blocks[1][4].x > 0 then
-          bit.x = bit.x - 32
+  if blocks[active_block] then
+
+    if love.keyboard.isDown('left','a') then
+        for i, bit in ipairs(blocks[active_block]) do
+          if blocks[active_block][4].x > 0 then
+            bit.x = bit.x - 32
+          end
         end
-      end
-	elseif love.keyboard.isDown('right','d') then
-      for i, bit in ipairs(blocks[1]) do
-        if blocks[1][4].x < 500 then
-          bit.x = bit.x + 32
+    elseif love.keyboard.isDown('right','d') then
+        for i, bit in ipairs(blocks[active_block]) do
+          if blocks[active_block][4].x < 500 then
+            bit.x = bit.x + 32
+          end
         end
-      end
+    end
   end
 
 end
