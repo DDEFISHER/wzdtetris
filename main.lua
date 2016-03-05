@@ -1,5 +1,6 @@
 --block globals
 blocks = {}
+inactive_blocks = {}
 bit1_img = nil
 bit2_img = nil
 bit3_img = nil
@@ -150,7 +151,6 @@ function check_block_collision(block1,block2,no_collision)
 
           if CheckCollision(bit1.x,bit1.y,bit1.img:getWidth(),bit1.img:getHeight(),bit2.x,bit2.y,bit2.img:getWidth(),bit2.img:getHeight()) then
             no_collision = false
-            active_block = active_block + 1;
             break;
           end
         end
@@ -164,7 +164,6 @@ function move_block(dt)
 
     for i, bit in ipairs(blocks[active_block]) do
       if bit.y + bit.img:getHeight() > 750 then
-        active_block = active_block + 1;
         break;
       end
     end
@@ -194,7 +193,7 @@ function block_update(dt)
 
   block_timer = block_timer + dt*10
 
-  if block_timer > 10 then
+  if block_timer > 30 then
     create_block()
   end
   
@@ -205,7 +204,7 @@ function block_update(dt)
 
     local no_collision = true
 
-    for k, block2 in ipairs(blocks) do
+    for k, block2 in ipairs(inactive_blocks) do
 
       if block1 == block2 then
         break
@@ -224,8 +223,12 @@ function block_update(dt)
       for k, bit in ipairs(block1) do
         bit.y = bit.y + (200*dt)
       end
-
+    else
+      table.insert(inactive_blocks, block1)
+      table.remove(blocks, i)
     end
+  
+  
 
   end
 
@@ -249,6 +252,11 @@ end
 function love.draw()
 
   for i, block in ipairs(blocks) do
+    for k, bit in ipairs(block) do
+      love.graphics.draw(bit.img, bit.x, bit.y)
+    end
+  end
+  for i, block in ipairs(inactive_blocks) do
     for k, bit in ipairs(block) do
       love.graphics.draw(bit.img, bit.x, bit.y)
     end
