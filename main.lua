@@ -209,14 +209,18 @@ function move_block(dt)
         move_timer = 0;
         if blocks[active_block][4].x < 500 and CheckFutureSideCollision(32) then
 
+            local old_bit2_y = blocks[active_block][2].y
+            local old_bit3_y = blocks[active_block][3].y
+            local old_bit4_y = blocks[active_block][4].y
+
             blocks[active_block][2].y = blocks[active_block][1].y - (blocks[active_block][2].x - blocks[active_block][1].x)
-            blocks[active_block][2].x = blocks[active_block][1].x + (blocks[active_block][1].y - blocks[active_block][1].y)
+            blocks[active_block][2].x = blocks[active_block][1].x + (old_bit2_y - blocks[active_block][1].y)
 
             blocks[active_block][3].y = blocks[active_block][1].y - (blocks[active_block][3].x - blocks[active_block][1].x)
-            blocks[active_block][2].x = blocks[active_block][1].x + (blocks[active_block][1].y - blocks[active_block][3].y)
+            blocks[active_block][3].x = blocks[active_block][1].x + (old_bit3_y - blocks[active_block][1].y)
 
             blocks[active_block][4].y = blocks[active_block][1].y - (blocks[active_block][4].x - blocks[active_block][1].x)
-            blocks[active_block][2].x = blocks[active_block][1].x + (blocks[active_block][1].y - blocks[active_block][4].y)
+            blocks[active_block][4].x = blocks[active_block][1].x + (old_bit4_y - blocks[active_block][1].y)
         end
     end
   end
