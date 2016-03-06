@@ -10,7 +10,9 @@ bit6_img = nil
 bit7_img = nil
 block_timer = 0
 move_timer = 0
+fall_timer = 0
 active_block = 1
+rotate_state = 1
 
 function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
   return x1 < x2+w2 and
@@ -176,7 +178,7 @@ function check_block_collision(block1,block2,no_collision)
       for i, bit1 in ipairs(block1) do
         for k, bit2 in ipairs(block2) do
 
-          if CheckCollision(bit1.x,bit1.y,bit1.img:getWidth(),bit1.img:getHeight(),bit2.x,bit2.y,bit2.img:getWidth(),bit2.img:getHeight()) then
+          if CheckCollision(bit1.x,bit1.y+4,bit1.img:getWidth(),bit1.img:getHeight(),bit2.x,bit2.y,bit2.img:getWidth(),bit2.img:getHeight()) then
             no_collision = false
             break;
           end
@@ -203,6 +205,19 @@ function move_block(dt)
             bit.x = bit.x + 32
           end
         end
+    elseif love.keyboard.isDown(' ') then
+        move_timer = 0;
+        if blocks[active_block][4].x < 500 and CheckFutureSideCollision(32) then
+
+            blocks[active_block][2].y = blocks[active_block][1].y - (blocks[active_block][2].x - blocks[active_block][1].x)
+            blocks[active_block][2].x = blocks[active_block][1].x + (blocks[active_block][1].y - blocks[active_block][1].y)
+
+            blocks[active_block][3].y = blocks[active_block][1].y - (blocks[active_block][3].x - blocks[active_block][1].x)
+            blocks[active_block][2].x = blocks[active_block][1].x + (blocks[active_block][1].y - blocks[active_block][3].y)
+
+            blocks[active_block][4].y = blocks[active_block][1].y - (blocks[active_block][4].x - blocks[active_block][1].x)
+            blocks[active_block][2].x = blocks[active_block][1].x + (blocks[active_block][1].y - blocks[active_block][4].y)
+        end
     end
   end
 
@@ -211,7 +226,8 @@ end
 function block_update(dt)
 
   block_timer = block_timer + dt*10
-  move_timer = move_timer + dt*20
+  move_timer = move_timer + dt*15
+  fall_timer = fall_timer + dt*120
 
 
 
@@ -242,14 +258,19 @@ function block_update(dt)
       end
     end
 
-    if no_bottom(block1) and no_collision then
+    if fall_timer > 1 then
 
-      for k, bit in ipairs(block1) do
-        bit.y = bit.y + (200*dt)
+      fall_timer = 0
+      if no_bottom(block1) and no_collision then
+
+        for k, bit in ipairs(block1) do
+          bit.y = bit.y + 4
+        end
+      else
+        table.insert(inactive_blocks, block1)
+        rotate_state = 1
+        table.remove(blocks, i)
       end
-    else
-      table.insert(inactive_blocks, block1)
-      table.remove(blocks, i)
     end
   
   
