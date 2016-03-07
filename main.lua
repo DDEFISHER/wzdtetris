@@ -174,24 +174,84 @@ function create_block()
 end
 function check_block_collision(block1,block2,no_collision)
 
-      --must check each bit in block1 with each bit in block2
-      for i, bit1 in ipairs(block1) do
-        for k, bit2 in ipairs(block2) do
+  --must check each bit in block1 with each bit in block2
+  for i, bit1 in ipairs(block1) do
+    for k, bit2 in ipairs(block2) do
 
-          if CheckCollision(bit1.x,bit1.y+4,bit1.img:getWidth(),bit1.img:getHeight(),bit2.x,bit2.y,bit2.img:getWidth(),bit2.img:getHeight()) then
-            no_collision = false
-            break;
-          end
-        end
+      if CheckCollision(bit1.x,bit1.y+4,bit1.img:getWidth(),bit1.img:getHeight(),bit2.x,bit2.y,bit2.img:getWidth(),bit2.img:getHeight()) then
+        no_collision = false
+        break;
       end
+    end
+  end
 
-      return no_collision
+  return no_collision
+end
+function no_rotate_collision(b2x,b2y,b3x,b3y,b4x,b4y)
+
+
+  for i, block in  ipairs(inactive_blocks) do
+    for k, bit in ipairs(block) do
+      if CheckCollision(bit.x,bit.y,bit.img:getWidth(),bit.img:getHeight(),b2x,b2y,bit.img:getWidth(),bit.img:getHeight()) then
+        return false
+      end
+      if CheckCollision(bit.x,bit.y,bit.img:getWidth(),bit.img:getHeight(),b3x,b3y,bit.img:getWidth(),bit.img:getHeight()) then
+        return false
+      end
+      if CheckCollision(bit.x,bit.y,bit.img:getWidth(),bit.img:getHeight(),b4x,b4y,bit.img:getWidth(),bit.img:getHeight()) then
+        return false
+      end
+      if (b4y + bit.img:getHeight()) > 720 then
+        return false
+      end
+      if (b3y + bit.img:getHeight()) > 720 then
+        return false
+      end
+      if (b2y + bit.img:getHeight()) > 720 then
+        return false
+      end
+    end
+  end
+
+  return true
 end
 function move_block(dt)
 
   if blocks[active_block] then
 
-    if love.keyboard.isDown('left','a') then
+    if love.keyboard.isDown(' ') then
+        move_timer = 0;
+        if blocks[active_block][4].x < 500 and CheckFutureSideCollision(32) then
+
+            local old_bit2_y = blocks[active_block][2].y
+            local old_bit3_y = blocks[active_block][3].y
+            local old_bit4_y = blocks[active_block][4].y
+
+            local new_b2_y = blocks[active_block][1].y - (blocks[active_block][2].x - blocks[active_block][1].x)
+            local new_b2_x = blocks[active_block][1].x + (old_bit2_y - blocks[active_block][1].y)
+
+            local new_b3_y = blocks[active_block][1].y - (blocks[active_block][3].x - blocks[active_block][1].x)
+            local new_b3_x = blocks[active_block][1].x + (old_bit3_y - blocks[active_block][1].y)
+
+            local new_b4_y = blocks[active_block][1].y - (blocks[active_block][4].x - blocks[active_block][1].x)
+            local new_b4_x = blocks[active_block][1].x + (old_bit4_y - blocks[active_block][1].y)
+
+            if no_rotate_collision ( new_b2_x,new_b2_y,new_b3_x,new_b3_y,new_b4_x,new_b4_y) then
+
+              blocks[active_block][2].y = new_b2_y 
+              blocks[active_block][2].x = new_b2_x
+
+              
+              blocks[active_block][3].y = new_b3_y
+              blocks[active_block][3].x = new_b3_x
+
+
+              blocks[active_block][4].y = new_b4_y
+              blocks[active_block][4].x = new_b4_x
+
+            end
+        end
+    elseif love.keyboard.isDown('left','a') then
         move_timer = 0;
         if blocks[active_block][4].x > 0 and CheckFutureSideCollision(-32) then
           for i, bit in ipairs(blocks[active_block]) do
@@ -205,26 +265,8 @@ function move_block(dt)
             bit.x = bit.x + 32
           end
         end
-    elseif love.keyboard.isDown(' ') then
-        move_timer = 0;
-        if blocks[active_block][4].x < 500 and CheckFutureSideCollision(32) then
-
-            local old_bit2_y = blocks[active_block][2].y
-            local old_bit3_y = blocks[active_block][3].y
-            local old_bit4_y = blocks[active_block][4].y
-
-            blocks[active_block][2].y = blocks[active_block][1].y - (blocks[active_block][2].x - blocks[active_block][1].x)
-            blocks[active_block][2].x = blocks[active_block][1].x + (old_bit2_y - blocks[active_block][1].y)
-
-            blocks[active_block][3].y = blocks[active_block][1].y - (blocks[active_block][3].x - blocks[active_block][1].x)
-            blocks[active_block][3].x = blocks[active_block][1].x + (old_bit3_y - blocks[active_block][1].y)
-
-            blocks[active_block][4].y = blocks[active_block][1].y - (blocks[active_block][4].x - blocks[active_block][1].x)
-            blocks[active_block][4].x = blocks[active_block][1].x + (old_bit4_y - blocks[active_block][1].y)
-        end
     end
   end
-
 end
 --main block game logic
 function block_update(dt)
@@ -239,7 +281,7 @@ function block_update(dt)
     create_block()
   end
   
-  if move_timer > 1 then
+  if move_timer > 2 then
     move_block(dt)
   end
 
