@@ -8,16 +8,18 @@ bit4_img = nil
 bit5_img = nil
 bit6_img = nil
 bit7_img = nil
+bitx_img = nil
 block_timer = 0
 move_timer = 0
 fall_timer = 0
 active_block = 1
 rotate_state = 1
+total_bits = 0
 
 function init()
 
   local bits = {}
-  local random_block_img = bit1_img
+  local random_block_img = bitx_img
   local new_bit = {}
 
   for place_y = 0, 768, 128 do
@@ -39,6 +41,28 @@ function init()
     new_bit = { x = 480, y = place_y + 64, img = random_block_img}
     table.insert(bits,new_bit)
     new_bit = { x = 480, y = place_y + 96, img = random_block_img}
+    table.insert(bits,new_bit)
+    table.insert(inactive_blocks, bits)
+  end
+  for place_x = 32, 480, 128 do
+    new_bit = { x = place_x, y = 736, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = place_x + 32, y = 736, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = place_x + 64, y = 736, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = place_x + 96, y = 736, img = random_block_img}
+    table.insert(bits,new_bit)
+    table.insert(inactive_blocks, bits)
+  end
+  for place_x = 32, 480, 128 do
+    new_bit = { x = place_x, y = 768, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = place_x + 32, y = 768, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = place_x + 64, y = 768, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = place_x + 96, y = 768, img = random_block_img}
     table.insert(bits,new_bit)
     table.insert(inactive_blocks, bits)
   end
@@ -68,7 +92,7 @@ function no_bottom(block)
 
   for k, bit in ipairs(block) do
     
-    if (bit.y + bit.img:getHeight( ) >= 750) then
+    if (bit.y + bit.img:getHeight( ) >= 736) then
       return false
     end
   end
@@ -298,23 +322,7 @@ function move_block(dt)
     end
   end
 end
---main block game logic
-function block_update(dt)
-
-  block_timer = block_timer + dt*10
-  move_timer = move_timer + dt*15
-  fall_timer = fall_timer + dt*120
-
-
-
-  if block_timer > 30 then
-    create_block()
-  end
-  
-  if move_timer > 2 then
-    move_block(dt)
-  end
-
+function fall_block()
   -- loop through each block and check if it has collided, if not move it.
   for i, block1 in ipairs(blocks) do
 
@@ -334,24 +342,66 @@ function block_update(dt)
       end
     end
 
-    if fall_timer > 1 then
 
-      fall_timer = 0
-      if no_bottom(block1) and no_collision then
+    if no_bottom(block1) and no_collision then
 
-        for k, bit in ipairs(block1) do
-          bit.y = bit.y + 4
+      for k, bit in ipairs(block1) do
+        bit.y = bit.y + 4
+      end
+    else
+      table.insert(inactive_blocks, block1)
+      rotate_state = 1
+      table.remove(blocks, i)
+      check_row_complete(block1)
+    end
+  end
+
+end
+function check_row_complete(last_block)
+
+  
+  local last_bit1_y = last_block[1].y
+  local last_bit2_y = last_block[2].y
+  local last_bit3_y = last_block[3].y
+  local last_bit4_y = last_block[4].y
+
+  total_bits = 0
+
+  for i, block in ipairs(inactive_blocks) do
+    for k, bit in ipairs(block) do
+
+      if bit.x ~= 0 and bit.x ~= 480 then
+        if bit.y == last_block[1].y then
+          total_bits = total_bits + 1
+          bit.img = bit2_img 
+          print(total_bits)
         end
-      else
-        table.insert(inactive_blocks, block1)
-        rotate_state = 1
-        table.remove(blocks, i)
       end
     end
-  
-  
-
   end
+
+end
+--main block game logic
+function block_update(dt)
+
+  block_timer = block_timer + dt*15
+  move_timer = move_timer + dt*175
+  fall_timer = fall_timer + dt*70
+
+
+
+  if block_timer > 30 then
+    create_block()
+  end
+  
+  if move_timer > 30 then
+    move_block(dt)
+  end
+
+  if fall_timer > 30 then
+    fall_block()
+  end
+
 
 end
 function love.load(arg)
@@ -362,6 +412,7 @@ function love.load(arg)
   bit5_img = love.graphics.newImage('assets/bit5.png')
   bit6_img = love.graphics.newImage('assets/bit6.png')
   bit7_img = love.graphics.newImage('assets/bit7.png')
+  bitx_img = love.graphics.newImage('assets/bitx.png')
   init()
 end
 
@@ -373,6 +424,7 @@ end
 
 function love.draw()
 
+  love.graphics.print(total_bits, 200, 200)
   for i, block in ipairs(blocks) do
     for k, bit in ipairs(block) do
       love.graphics.draw(bit.img, bit.x, bit.y)
