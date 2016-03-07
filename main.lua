@@ -14,6 +14,36 @@ fall_timer = 0
 active_block = 1
 rotate_state = 1
 
+function init()
+
+  local bits = {}
+  local random_block_img = bit1_img
+  local new_bit = {}
+
+  for place_y = 0, 768, 128 do
+    new_bit = { x = 0, y = place_y, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = 0, y = place_y + 32, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = 0, y = place_y + 64, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = 0, y = place_y + 96, img = random_block_img}
+    table.insert(bits,new_bit)
+    table.insert(inactive_blocks, bits)
+  end
+  for place_y = 0, 768, 128 do
+    new_bit = { x = 480, y = place_y, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = 480, y = place_y + 32, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = 480, y = place_y + 64, img = random_block_img}
+    table.insert(bits,new_bit)
+    new_bit = { x = 480, y = place_y + 96, img = random_block_img}
+    table.insert(bits,new_bit)
+    table.insert(inactive_blocks, bits)
+  end
+
+end
 function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
   return x1 < x2+w2 and
          x2 < x1+w1 and
@@ -51,7 +81,7 @@ function create_block()
 
     local bits = {}
     --local random_position = math.random(10, love.graphics.getWidth() - 100)
-    local random_position = 256
+    local random_position = 224
     local random_block = math.random(7)
 
     local x1
@@ -221,7 +251,7 @@ function move_block(dt)
 
     if love.keyboard.isDown(' ') then
         move_timer = 0;
-        if blocks[active_block][4].x < 500 and CheckFutureSideCollision(32) then
+        if blocks[active_block][4].x + blocks[active_block][4].img:getWidth() < 490 and CheckFutureSideCollision(32) then
 
             local old_bit2_y = blocks[active_block][2].y
             local old_bit3_y = blocks[active_block][3].y
@@ -253,14 +283,14 @@ function move_block(dt)
         end
     elseif love.keyboard.isDown('left','a') then
         move_timer = 0;
-        if blocks[active_block][4].x > 0 and CheckFutureSideCollision(-32) then
+        if blocks[active_block][1].x > 42 and blocks[active_block][4].x > 42 and CheckFutureSideCollision(-32) then
           for i, bit in ipairs(blocks[active_block]) do
             bit.x = bit.x - 32
           end
         end
     elseif love.keyboard.isDown('right','d') then
         move_timer = 0;
-        if blocks[active_block][4].x < 500 and CheckFutureSideCollision(32) then
+        if blocks[active_block][4].x + blocks[active_block][4].img:getWidth() < 458 and blocks[active_block][1].x + blocks[active_block][1].img:getWidth() < 458  and CheckFutureSideCollision(32) then
           for i, bit in ipairs(blocks[active_block]) do
             bit.x = bit.x + 32
           end
@@ -332,6 +362,7 @@ function love.load(arg)
   bit5_img = love.graphics.newImage('assets/bit5.png')
   bit6_img = love.graphics.newImage('assets/bit6.png')
   bit7_img = love.graphics.newImage('assets/bit7.png')
+  init()
 end
 
 function love.update(dt)
@@ -354,4 +385,3 @@ function love.draw()
   end
 
 end
-
